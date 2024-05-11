@@ -77,10 +77,7 @@ Apache Kafka serves as the backbone of the event-driven architecture, providing 
 ## Getting Started
 
 To set up the project locally, follow these steps:
-1. Clone the repository: `git clone [Repository URL]`
-2. Install dependencies: `cd [Repository Name] && npm install`
-3. Configure environment variables: Copy `.env.example` to `.env` and update values.
-4. Start the development server: `npm start`
+Instructions to setup project here.
 
 ## Architecture Diagram
 

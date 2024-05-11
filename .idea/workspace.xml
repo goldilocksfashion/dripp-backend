@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59cb7e85-ad8c-40ed-8de3-a8c8849273c2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../dripp-ai-infrastructure/.idea/dripp-ai-infrastructure.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../dripp-ai-infrastructure/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../dripp-ai-infrastructure/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../dripp-ai-infrastructure/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../dripp-ai-infrastructure/cmd/root.go" beforeDir="false" afterPath="$PROJECT_DIR$/../dripp-ai-infrastructure/cmd/root.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../dripp-ai-infrastructure/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../dripp-ai-infrastructure/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../dripp-ai-infrastructure/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../dripp-ai-infrastructure/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
