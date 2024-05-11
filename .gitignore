@@ -1,14 +1,9 @@
-# Mac OS X files
-.DS_Store
-
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-
-# Test binary, build with `go test -c`
 *.test
 
 # Output of the go coverage tool, specifically when used with LiteIDE
@@ -19,3 +14,37 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Ignore the binary output directory
+/bin/
+
+# Ignore the local configuration file
+/local.env
+
+# Ignore build outputs
+/dist
+
+# Ignore the pkg directory
+/pkg/
+
+# IDEs and editors
+/.idea/           # IntelliJ IDEA (also covers Goland)
+.vscode/          # Visual Studio Code settings
+*.iml             # IntelliJ IDEA Module
+*.ipr             # IntelliJ project file
+*.iws             # IntelliJ IDE workspace file
+
+# Ignore all log files and temporary files.
+*.log
+*.tmp
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
