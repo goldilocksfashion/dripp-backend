@@ -28,7 +28,7 @@
 /pkg/
 
 # IDEs and editors
-/.idea/           # IntelliJ IDEA (also covers Goland)
+.idea/           # IntelliJ IDEA (also covers Goland)
 .vscode/          # Visual Studio Code settings
 *.iml             # IntelliJ IDEA Module
 *.ipr             # IntelliJ project file
