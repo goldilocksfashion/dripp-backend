@@ -6,18 +6,6 @@ import (
 	"time"
 )
 
-type EventPayload struct {
-	Data      string `json:"data"`
-	CreatedAt int64  `json:"created_at"`
-}
-
-// Event represents an event.
-type Event struct {
-	Id            int64             `json:"id"`
-	SourceContext string            `json:"source_context"`
-	Payload       EventPayload      `json:"payload"`
-	Tags          map[string]string `json:"tags"`
-}
 
 // EventTagManager tags eventsn based on bounded context and event types
 type EventTagManager interface {

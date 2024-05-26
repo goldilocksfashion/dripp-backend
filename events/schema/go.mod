@@ -1,14 +1,17 @@
-module event-tag-management
+module schema
 
 go 1.22.3
 
 require (
-shared-libraries/kafka v0.0.0
-shared-libraries/services v0.0.0
+	github.com/go-sql-driver/mysql v1.8.1
+	github.com/jmoiron/sqlx v1.4.0
+	github.com/linkedin/goavro/v2 v2.10.1
+	shared-libraries/k8s v0.0.0
+	shared-libraries/kafka v0.0.0
 )
 
 require (
-	github.com/confluentinc/confluent-kafka-go v1.9.2 // indirect
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.12.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
@@ -28,7 +31,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	go.uber.org/mock v0.4.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/oauth2 v0.20.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
@@ -45,12 +47,11 @@ require (
 	k8s.io/klog/v2 v2.120.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240521193020-835d969ad83a // indirect
 	k8s.io/utils v0.0.0-20240502163921-fe8a2dddb1d0 // indirect
-	shared-libraries/k8s v0.0.0 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
-replace shared-libraries/kafka => ../shared-libraries/kafka
+replace shared-libraries/kafka => ../../shared-libraries/kafka
 
-replace shared-libraries/k8s => ../shared-libraries/k8s
+replace shared-libraries/k8s => ../../shared-libraries/k8s
