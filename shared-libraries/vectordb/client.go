@@ -16,13 +16,16 @@ type Vector struct {
 }
 
 type VectorDbClient interface {
+	CreateCollection(ctx context.Context, collectionName string, dimension int) error
+	CreateIndex(ctx context.Context, collectionName string) error
+	DeleteCollection(ctx context.Context, collectionName string) error
 	GetVector(ctx context.Context, id string) (*Vector, error)
 	PutVector(ctx context.Context, vector *Vector) error
 	DeleteVector(ctx context.Context, id string) error
 }
 
 type VectorDbClientImpl struct {
-	milvusClient *client.Client
+	milvusClient client.Client
 }
 
 var once sync.Once
@@ -33,6 +36,21 @@ func GetInstance() VectorDbClient {
 		instance = newVectorDbClient()
 	})
 	return instance
+}
+
+func (c VectorDbClientImpl) CreateCollection(ctx context.Context, collectionName string, dimension int) error {
+	schema := c.milvusClient.NewSchemaBuilder().AddFloatVectorField("vector", dimension).Build()
+	err := c.milvusClient.CreateCollection(ctx, collectionName, schema)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (c VectorDbClientImpl) CreateIndex(ctx context.Context, collectionName string) error {
+	return nil
+}
+func (c VectorDbClientImpl) DeleteCollection(ctx context.Context, collectionName string) error {
+	return nil
 }
 func (c VectorDbClientImpl) GetVector(ctx context.Context, id string) (*Vector, error) {
 	return nil, nil
