@@ -1,0 +1,13 @@
+name: events
+channels:
+- conda-forge
+dependencies:
+- python
+- fastapi
+- requests
+- gunicorn
+- boto3
+- uvicorn
+- pytest
+- python-confluent-kafka
+- trio
