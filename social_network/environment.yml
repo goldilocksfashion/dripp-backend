@@ -1,0 +1,20 @@
+name: social_network
+channels:
+- conda-forge
+dependencies:
+- python
+- fastapi
+- requests
+- gunicorn
+- boto3
+- uvicorn
+- pytest
+- python-confluent-kafka
+- trio
+- events
+- authlib
+- python-dotenv
+- pydantic
+- sqlalchemy
+- databases
+- firebase-admin
