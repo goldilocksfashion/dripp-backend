@@ -1,0 +1,16 @@
+fastapi
+requests
+gunicorn
+boto3
+uvicorn
+pytest
+confluent-kafka
+trio
+events
+authlib
+python-dotenv
+pydantic
+sqlalchemy
+databases
+firebase-admin 
+events

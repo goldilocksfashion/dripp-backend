@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, url_for
-from  events import Event,EventKind, KafkaUtil
+from fastapi import FastAPI, Depends, HTTPException, Request
+from events.app.event import Event
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
@@ -76,16 +76,16 @@ oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl='https://accounts
 
 
 
-@app.get("events/social_network/meta")
+@app.get("/events/social_network/meta")
 def read_root():
     return "pong"
 
 @app.get("/events/social_network/login")
 async def login(request: Request):
-    redirect_uri = url_for('auth', _external=True)
+    redirect_uri = request.url_path_for('auth', _external=True)
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
-@app.route('/auth')
+@app.route('/events/social_networks/auth')
 async def auth(request: Request):
     token = await oauth.google.authorize_access_token(request)
     user = await oauth.google.parse_id_token(request, token)
@@ -107,7 +107,7 @@ async def api_insert_follow(follower_id: int, followed_user_id: int):
     await insert_follow(app.state.pool, follower_id=follower_id, followed_user_id=followed_user_id)
     return {"message": "Follow inserted successfully"}
 
-@app.get("/followers/{user_id}")
+@app.get("/events/followers/{user_id}")
 async def api_fetch_followers(user_id: int):
     followers = await fetch_followers(app.state.pool, user_id=user_id)
     if followers:

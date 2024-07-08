@@ -17,4 +17,4 @@ dependencies:
 - pydantic
 - sqlalchemy
 - databases
-- firebase-admin
+- firebase-admin ## this does not work currently

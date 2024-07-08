@@ -107,7 +107,7 @@ class ReactionType(Enum):
 
 class Reaction(BaseModel):
     """
-    This class represents a like on a post or post segments
+    This class represents a like/dislike on a post or post segments
     """
     id: int
     post : Optional['Post'] = None
@@ -119,6 +119,8 @@ class UserProfile(BaseModel):
     user_id: int
     bio: Optional[str] = None
     profile_picture_url: Optional[str] = None
+    birthday: Optional[datetime] = None
+    location: Optional[str] = None
     privacy_settings: dict  # This could be more detailed depending on your needs
 
 class Follow(BaseModel):
