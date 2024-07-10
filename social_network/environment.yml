@@ -17,4 +17,4 @@ dependencies:
 - pydantic
 - sqlalchemy
 - databases
-- firebase-admin ## this does not work currently
+- google-auth ## this does not work currently

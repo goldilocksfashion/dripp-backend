@@ -65,25 +65,31 @@ class KafkaUtil:
         """
         return Producer(self._producer_config)
 
-    def _acked(err, msg):
+    def _acked(self,err, msg):
         """
         A callback function that is called when a message is delivered.
         """
         if err is not None:
-            print("Failed to deliver message: %s: %s" % (str(msg), str(err)))
+            self.logger.error("Failed to deliver message: %s: %s" % (str(msg), str(err)))
         else:
-            print("Message produced: %s" % (str(msg)))
+            self.logger.debug("Message produced: %s" % (str(msg)))
 
     def send_message(self,topic, source_bounded_context, key, value, target_bounded_context : Optional[str] = None):
         """
-        Sends a message to a Kafka topic.
-
+        sends a message to a Kafka topic.
         Args:
             topic (str): The Kafka topic to send the message to.
+            source_bounded_context (str): The source bounded context of the message.
             key (str): The key of the message.
             value (str): The value of the message.
+            target_bounded_context (str): The target bounded context of the message.
         """
-        self.producer.produce(topic, key=key.encode('utf-8'), value=value)
+        headers = []
+        if target_bounded_context is not None:
+            headers.append(target_bounded_context.encode('utf-8'))
+        if source_bounded_context is not None:
+            headers.append(source_bounded_context.encode('utf-8'))
+        self.producer.produce(topic, key=key.encode('utf-8'), value=value, headers=headers, callback=self._acked)
         self.producer.flush()
 
 

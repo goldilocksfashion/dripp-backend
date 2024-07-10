@@ -6,11 +6,8 @@ uvicorn
 pytest
 confluent-kafka
 trio
-events
 authlib
 python-dotenv
 pydantic
 sqlalchemy
 databases
-firebase-admin 
-google-auth

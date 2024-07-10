@@ -1,5 +1,7 @@
+import datetime
+import uuid
 from fastapi import FastAPI, Depends, HTTPException, Request
-from events.app.event import Event
+from events.app.event import Event, EventKind, KafkaUtil
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
@@ -9,14 +11,28 @@ from starlette.responses import RedirectResponse
 from contextlib import asynccontextmanager
 from typing import Dict
 from fastapi import FastAPI, Depends
-
+from google.oauth2 import id_token
+from google.auth.transport import requests
+import os 
 from social_network.app.database_accessor import create_pool, create_tables, fetch_followers, insert_follow
 
 pool = None ## global variable to store the connection pool
+kafka_util = None
+GOOGLE_CLIENT_ID = os.getenv("SOCIAL_NETWORK_GOOGLE_CLIENT_ID")
 
+def _decode_google_token(token: str):
+    try:
+        idinfo = id_token.verify_oauth2_token(token, requests.Request(), GOOGLE_CLIENT_ID)
+        userid = idinfo['sub']
+        return idinfo
+    except ValueError:
+        raise
+
+    
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     pool = await create_pool()
+    kafka_util = KafkaUtil(source_bounded_context="social_network")
     await create_tables(pool)
     yield
     await pool.close()
@@ -29,51 +45,30 @@ app.add_middleware(SessionMiddleware, secret_key="your_secret_key")
 # Load configuration from environment variables or .env file
 config = Config(".env")
 
-# Set up OAuth
-oauth = OAuth(config)
-oauth.register(
-    name='google',
-    client_id=config('GOOGLE_CLIENT_ID'),
-    client_secret=config('GOOGLE_CLIENT_SECRET'),
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    authorize_params=None,
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    access_token_params=None,
-    refresh_token_url=None,
-    redirect_uri='http://localhost:8000/auth',
-    client_kwargs={'scope': 'openid profile email'},
-)
-
-oauth.register(
-    name='instagram',
-    client_id=config('INSTAGRAM_CLIENT_ID'),
-    client_secret=config('INSTAGRAM_CLIENT_SECRET'),
-    authorize_url='https://api.instagram.com/oauth/authorize',
-    access_token_url='https://api.instagram.com/oauth/access_token',
-    client_kwargs={'scope': 'user_profile'},
-)
-
-oauth.register(
-    name='tiktok',
-    client_id=config('TIKTOK_CLIENT_ID'),
-    client_secret=config('TIKTOK_CLIENT_SECRET'),
-    authorize_url='https://open-api.tiktok.com/platform/oauth/connect/',
-    access_token_url='https://open-api.tiktok.com/platform/oauth/token/',
-    client_kwargs={'scope': 'user_info'},
-)
-
-oauth.register(
-    name='pinterest',
-    client_id=config('PINTEREST_CLIENT_ID'),
-    client_secret=config('PINTEREST_CLIENT_SECRET'),
-    authorize_url='https://api.pinterest.com/oauth/',
-    access_token_url='https://api.pinterest.com/v1/oauth/token',
-    client_kwargs={'scope': 'read_public, write_public'},
-)
-
-
-oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl='https://accounts.google.com/o/oauth2/auth')
-
+@app.post("events/social_network/signup/google")
+async def signup_with_google(token: str):
+    user_info = _decode_google_token(token)
+    if user_info:
+        # Extract needed information from user_info
+        user_profile = {
+            "name": user_info.get("name"),
+            "email": user_info.get("email"),
+            "profile_picture": user_info.get("picture")
+            # Add other fields as needed
+        }
+        # Save or update the user profile in your database
+        # save_user_profile(user_profile)
+        user_signup_event = Event(event_id=uuid.uuid4(), 
+                            event_creation_ts=datetime.now().timestamp(),
+                            event_kind=EventKind.SOCIAL_NETWORK,
+                            event_payload=user_profile,
+                            event_source=EventKind.SOCIAL_NETWORK,
+                            event_location="social_network_signup",
+                            event_name="social_network_signup")
+        kafka_util.send_message(topic="social_network_user_profile", key="social_network_signup", value=user_signup_event.model_dump_json())
+        return {"message": "User profile saved successfully", "user": user_profile}
+    else:
+        raise HTTPException(status_code=400, detail="Invalid or expired Google token")
 
 
 @app.get("/events/social_network/meta")
