@@ -34,7 +34,6 @@ class LogUtil:
     """
     A utility class for logging messages to a file and an AWS S3 bucket.
     """
-
     def __init__(self, level : Optional[str] = None
                  , log_file: Optional[str] = 'app.log'):
         if os.environ.get('LOG_FILE') is not None:

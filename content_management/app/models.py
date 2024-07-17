@@ -3,6 +3,7 @@ from typing import Optional, List, ForwardRef
 from datetime import datetime
 from enum import Enum
 import social_network.app.models as models
+from models import User as User
 
 class PostKind(Enum):
     TEXT = "text"
@@ -145,6 +146,6 @@ class Post(BaseModel):
     user: User
     reactions: List[Reaction] = []
     comments: List[Comment] = []
-    media_attachments: List[MediaAttachment] = []  # New field for media attachments
+    media_attachments: List[str] = []  # New field for media attachments
     tags: List[Tag] = []
     hashtags: List[Hashtag] = []

@@ -1,5 +1,6 @@
+import asyncio
 from datetime import datetime
-from confluent_kafka import Consumer, Producer
+from confluent_kafka import Consumer, Producer, KafkaError, KafkaException
 from typing import Optional
 import os
 from event import Event, EventKind
@@ -55,7 +56,52 @@ class KafkaUtil:
         """
         return Consumer(self._consumer_config)
 
-    
+    async def subscribe(self, topic, on_event):
+        """
+        Asynchronously subscribes to a Kafka topic and calls a callback function when a message is received.
+
+        Args:
+            topic (str): The Kafka topic to subscribe to.
+        """
+        # Initialize the Consumer with the provided configuration
+        consumer = Consumer(self._consumer_config)
+        if(topic is None):
+            self.logger.error('== Topic is None == subscribing to target_bounded_context.')
+            consumer.subscribe([self.target_bounded_context])
+        else:
+            self.logger.info(f"Subscribing to topic: {topic}")
+            consumer.subscribe([topic])
+        # Run the poll loop in an asyncio task to not block the event loop
+        async def poll_messages():
+            while True:
+                # Poll for a message with a timeout (e.g., 1.0 seconds)
+                message = consumer.poll(1.0)
+                if message is None:
+                    continue
+                if message.error():
+                    if message.error().code() == KafkaError._PARTITION_EOF:
+                        # End of partition event
+                        continue
+                    else:
+                        print(f"Error: {message.error()}")
+                        break
+                else:
+                    # Call the on_event callback
+                    await on_event(message)
+
+        # Start polling in a background task
+        task = asyncio.create_task(poll_messages())
+
+        try:
+            # Wait for the polling task to complete (it won't under normal conditions)
+            await task
+        except asyncio.CancelledError:
+            # Task cancellation should be handled gracefully
+            self.logger.info("Polling task was cancelled")
+        finally:
+            consumer.close()
+
+
     def _create_producer(self) -> Producer:
         """
         Creates a Kafka producer instance.
