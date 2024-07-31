@@ -4,6 +4,10 @@ from datetime import datetime
 from enum import Enum
 import social_network.app.models as models
 from models import User as User
+from dataclasses import dataclass
+from social_network.app.models import User as User
+
+
 
 class PostKind(Enum):
     TEXT = "text"
@@ -108,10 +112,10 @@ class Reaction(BaseModel):
     reactionType: ReactionType
 
     class MediaAttachment(BaseModel):
-    post_id: int
-    media_url: str
-    media_type: str  # e.g., "image", "video"
-    created_at: datetime
+        post_id: int
+        media_url: str
+        media_type: str  # e.g., "image", "video"
+        created_at: datetime
 
 class Tag(BaseModel):
     name: str

@@ -35,8 +35,3 @@ async def execute_query(query, *args):
     async with create_pool() as pool:
         async with pool.acquire() as connection:
             return await connection.fetch(query, *args)
-
-async def insert_user(user_id, username, email, password, created_at):
-    query = "INSERT INTO users (user_id, username, email, password, created_at) VALUES ($1, $2, $3, $4, $5)"
-    return await execute_query(query, user_id, username, email, password, created_at)
- 

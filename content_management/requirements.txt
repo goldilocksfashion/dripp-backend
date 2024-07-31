@@ -5,9 +5,9 @@ boto3
 uvicorn
 pytest
 confluent-kafka
-trio
 authlib
 python-dotenv
 pydantic
 sqlalchemy
 databases
+nuclio_sdk

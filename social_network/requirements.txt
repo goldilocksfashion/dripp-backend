@@ -1,12 +1,10 @@
+dripp-events==0.1.0
 fastapi
 requests
 gunicorn
 boto3
 uvicorn
 pytest
-confluent-kafka
-trio
-events
 authlib
 python-dotenv
 pydantic
@@ -14,3 +12,6 @@ sqlalchemy
 databases
 firebase-admin 
 google-auth
+setuptools
+moto[all]
+hypothesis
