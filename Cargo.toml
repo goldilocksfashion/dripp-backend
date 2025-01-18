@@ -1,0 +1,16 @@
+[package]
+name = "dripp-backend"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+## core
+flutter_rust_bridge = "2.7.0"
+tokio = { version = "1.10.0", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+libp2p = "0.55.0"
+mDNS = "3.0.0"
+DHT = "0.0.6"
+storage = "0.5.0"
+mockall = "0.13.1"
