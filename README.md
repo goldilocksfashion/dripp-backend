@@ -1,7 +1,8 @@
 # Dripp AI backend
 P2P Social Network focussed on fashion.
 
-```
+```mermaid
+
   graph TD
     subgraph "Post Creation & Distribution"
         A[Peer A Poster] -->|1. Store Locally| A1[Local Cache]
