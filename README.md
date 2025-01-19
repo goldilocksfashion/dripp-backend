@@ -219,3 +219,29 @@ graph TD
     E -->|Merge| G
     F -->|Merge| G
 ```
+
+## Confict Resolution
+
+```mermaid
+graph TD
+    A[Detect Conflict] -->|Compare Vector Clocks| B{Conflict Type}
+    
+    B -->|Post Edit| C[Post Resolution]
+    B -->|Comments| D[Comment Resolution]
+    B -->|Likes/Dislikes| E[Counter Resolution]
+    
+    subgraph "Post Resolution"
+        C -->|Compare Timestamps| C1[Latest Wins]
+        C -->|Keep History| C2[Version Chain]
+    end
+    
+    subgraph "Comment Resolution"
+        D -->|Ordered Set| D1[Merge Comments]
+        D -->|Update Refs| D2[Link to Post]
+    end
+    
+    subgraph "Counter Resolution"
+        E -->|Add Operation| E1[Combine Counts]
+        E -->|De-duplicate| E2[User Actions]
+    end
+```
