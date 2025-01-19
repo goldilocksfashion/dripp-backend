@@ -73,3 +73,8 @@ struct Topic {
     last_updated: i64,
     groups: Vec<Group> 
 }
+/// A topic manager manages topics and group streams.
+struct TopicManager{
+    topics: Vec<Topic>,
+    storage: Option<DB>
+}
