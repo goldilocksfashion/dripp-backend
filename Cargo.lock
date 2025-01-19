@@ -786,24 +786,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dripp_backend"
-version = "1.0.0"
-dependencies = [
- "flutter_rust_bridge",
- "futures",
- "iroh",
- "once_cell",
- "proptest",
- "rocksdb",
- "serde",
- "serde_json",
- "thiserror 2.0.11",
- "tokio",
- "tracing",
- "yrs",
-]
-
-[[package]]
 name = "dtoa"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5038,6 +5020,24 @@ dependencies = [
  "quote",
  "syn 2.0.96",
  "synstructure",
+]
+
+[[package]]
+name = "your_crate_name"
+version = "1.0.0"
+dependencies = [
+ "flutter_rust_bridge",
+ "futures",
+ "iroh",
+ "once_cell",
+ "proptest",
+ "rocksdb",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.11",
+ "tokio",
+ "tracing",
+ "yrs",
 ]
 
 [[package]]

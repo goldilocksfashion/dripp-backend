@@ -1,7 +1,14 @@
 [package]
-name = "dripp_backend"
+name = "your_crate_name"
 version = "1.0.0"
-edition = "2021"
+authors = ["Anirudh Vyas <ricky.nj@gmail.com>"]
+description = "Iroh based FFI library to build fllutter based app Dripp"
+license = "MIT"
+repository = "https://github.com/goldilocksfashion/dripp_backend"
+documentation = "https://docs.rs/dripp_backend"
+homepage = "https://dripp.app"
+keywords = ["p2p", "ffi", "networking", "social", "flutter", "dripp"]
+categories = ["network-programming", "data-structures", "social-networking", "flutter", "peer-to-peer"]
 
 [lib]
 name = "dripp_backend"
@@ -13,8 +20,8 @@ flutter_rust_bridge = "2.7.0"
 yrs = "0.22.0"
 tokio = { version = "1.10.0", features = ["rt", "rt-multi-thread", "io-util", "time", "sync"] }
 rocksdb = "0.23.0"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+serde =  "1.0.217" 
+serde_json = "1.0.136"
 iroh = "0.31.0"
 futures = "0.3"
 once_cell = "1.0"
