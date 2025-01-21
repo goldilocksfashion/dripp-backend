@@ -3,6 +3,7 @@ use crate::infrastructure::events::EventStream;
 
 
 /// A group is a collection members with a common interest.
+#[derive(Serialize, Deserialize)]
 pub struct Group{
     id: [u8; 16],
     name: Vec<u8>,
@@ -16,6 +17,7 @@ pub struct Group{
 }
 
 /// e.g. fashion, vintage-cars, programming, cooking, etc.
+#[derive(Serialize, Deserialize)]
 pub struct Topic {
     id: [u8; 16],
     name: Vec<u8>,

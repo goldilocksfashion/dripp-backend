@@ -1,12 +1,13 @@
+use serde::Serialize;
 use crate::application::services::EventService;
+use crate::infrastructure::core::{InfraResult, TOKIO};
 use crate::infrastructure::events::Event;
 use crate::infrastructure::storage::{StorageService, StorageServiceSqlLiteImpl};
-use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
-/// FFI manager manages crud stuff 
+/// FFI manager manages crud stuff
 /// see: `[services]`
-trait FFIManager<T> {
+pub trait FFIManager<T> {
     fn create(&self, event: T) -> FfiResult;
     fn delete(&self, event: T) -> FfiResult;
     fn update(&self, event: T) -> FfiResult;
@@ -19,9 +20,7 @@ pub struct FfiResult {
     pub error_message: *mut c_char, // Error message (null if success)
 }
 
-pub fn to_ffi_result<T: Serialize>(
-    result: Result<T, Box<dyn std::error::Error>>,
-) -> FfiResult {
+pub fn to_ffi_result<T: Serialize>(result: InfraResult<T>) -> FfiResult {
     match result {
         Ok(data) => {
             let json = match serde_json::to_string(&data) {
@@ -51,26 +50,26 @@ pub fn to_ffi_result<T: Serialize>(
 #[no_mangle]
 pub extern "C" fn free_ffi_result(result: FfiResult) {
     if !result.data.is_null() {
-        unsafe { CString::from_raw(result.data) };
+        unsafe { drop(CString::from_raw(result.data)) };
     }
     if !result.error_message.is_null() {
-        unsafe { CString::from_raw(result.error_message) };
+        unsafe { drop(CString::from_raw(result.error_message)) };
     }
 }
 impl FFIManager<Event> for EventService<StorageServiceSqlLiteImpl> {
     fn create(&self, event: Event) -> FfiResult {
-        let result = self.storage_service.create(event); // Calls storage_service's `create`
-        to_ffi_result(result.map(|_| vec![])) // Convert to FfiResult
+        let result = TOKIO.block_on(async { self.storage_service.create(event).await }); // Calls storage_service's `create`
+        to_ffi_result(result) // Convert to FfiResult
     }
 
     fn delete(&self, event: Event) -> FfiResult {
-        let result = self.storage_service.delete(event);
-        to_ffi_result(result.map(|_| vec![]))
+        let result = TOKIO.block_on(async { self.storage_service.delete(event).await });
+        to_ffi_result(result)
     }
 
     fn update(&self, event: Event) -> FfiResult {
-        let result = self.storage_service.update(event);
-        to_ffi_result(result.map(|_| vec![]))
+        let result = TOKIO.block_on(async { self.storage_service.create(event).await });
+        to_ffi_result(result)
     }
 
     fn search(&self, query: *const c_char) -> FfiResult {
@@ -85,7 +84,7 @@ impl FFIManager<Event> for EventService<StorageServiceSqlLiteImpl> {
             CStr::from_ptr(query).to_str().unwrap_or("")
         };
 
-        let result = self.storage_service.search(query_str);
+        let result = TOKIO.block_on(async { self.storage_service.search(query_str)});
         to_ffi_result(result)
     }
 }

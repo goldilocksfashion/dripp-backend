@@ -22,6 +22,7 @@ pub struct Event {
     pub payload: Vec<u8>,
 }
 
+#[derive(Builder, Debug, Serialize, Deserialize, Clone)]
 /// An event stream is a collection of events.
 pub struct EventStream {
     pub id: [u8; 16],
