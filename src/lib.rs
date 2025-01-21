@@ -30,4 +30,6 @@
 //     pub success: bool,            // Operation success flag
 // }
 
-mod infrastructure;
+pub mod domain;
+pub mod infrastructure;
+pub mod application;

@@ -10,10 +10,20 @@ use sqlx::SqlitePool;
 
 use super::core::InfraResult;
 
-pub trait StorageService<T> {
+/// Persisted data identifying an event source.
+#[derive(Debug, Serialize, Deserialize)]
+struct Id<'a>{
+    public_key: &'a [u8],
+    #[serde(skip)] // Skip this field during serialization
+    secret_key: &'a [u8],
+    created: i64,
+}
+
+
+/// Storage service is a trait that defines the operations that can be performed on a storage.
+pub trait StorageService<T: Event> {
     fn create(&self, event: T) -> InfraResult<bool>;
     fn delete(&self, event: T) -> InfraResult<bool>;
-    fn update(&self, event: T) -> InfraResult<bool>;
     fn search(&self, query: &str) -> InfraResult<[&T]>;
 }
 

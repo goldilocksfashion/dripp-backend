@@ -1,10 +1,9 @@
-use serde::{Serialize, Deserialize};
-
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct User {
-    id: i32,
+    id: [u8; 16],
     name: String,
-    phone: String,
-    created_at: String,
+    phone: [u8; 10],
+    created_at: i64,
 }
