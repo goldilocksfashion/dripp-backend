@@ -13,7 +13,7 @@ use super::core::InfraResult;
 /// Persisted data identifying an event source.
 #[derive(Debug, Serialize, Deserialize)]
 struct Id<'a>{
-    public_key: &'a [u8],
+    public_key: [u8; 32],
     #[serde(skip)] // Skip this field during serialization
     secret_key: &'a [u8],
     created: i64,
@@ -24,16 +24,16 @@ struct Id<'a>{
 pub trait StorageService<T: Event> {
     fn create(&self, event: T) -> InfraResult<bool>;
     fn delete(&self, event: T) -> InfraResult<bool>;
-    fn search(&self, query: &str) -> InfraResult<[&T]>;
+    fn search(&self, query: &str) -> InfraResult<Vec>;
 }
 
-struct StorageServiceSqlLiteImpl {
+pub struct StorageServiceSqlLiteImpl {
     env: Environment,
     db: &'static SqlitePool,
     runtime: &'static tokio::runtime::Runtime,
 }
 
-impl StorageServiceSqlLiteImpl {
+pub impl StorageServiceSqlLiteImpl {
     pub fn new(passed_in_env: Environment) -> Self {
         StorageServiceSqlLiteImpl {
             env: passed_in_env,
@@ -43,7 +43,7 @@ impl StorageServiceSqlLiteImpl {
     }
 }
 
-impl StorageService for StorageServiceSqlLiteImpl {
+pub impl StorageService for StorageServiceSqlLiteImpl {
     fn create(&self, event: Event) -> InfrasResult<bool> {
         let query = r"#INSERT INTO events (id, event_source, created, pinned, event_type, payload) VALUES (?, ?, ?, ?, ?, ?)";
         sqlx::query(query)
