@@ -8,7 +8,7 @@ P2P Social Network focussed on fashion.
 ```mermaid
 graph TD
     A[Flutter UI] -->|FFI| B[Rust Backend]
-    B -->|1. Create| C[Local RocksDB]
+    B -->|1. Create| C[Local SQLLite]
     B -->|2. Generate| D[Group Keys]
     B -->|3. Iroh Announce| E[P2P Network]
     B -->|4. Backup| F[AI Bot/S3]
@@ -18,7 +18,7 @@ graph TD
     C -->|Store| I[Permissions]
     
     E -->|Sync| J[Online Peers]
-    J -->|Store| K[Their RocksDB]
+    J -->|Store| K[Their SQLLite]
     
     F -->|Backup| L[Persistent Storage]
 ```
@@ -27,18 +27,17 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Post Content] -->|FFI| B[Rust Backend]
-    B -->|1. Store| C[Local RocksDB]
-    B -->|2. Generate| D[Content CID]
-    B -->|3. Try Iroh| E[No Peers]
-    B -->|4. Backup| F[AI Bot]
-    
-    F -->|Store| G[S3 Backup]
-    F -->|Queue| H[Pending Distribution]
-    
-    I[OP Goes Offline] -.->|Later| J[Peers Come Online]
-    J -->|Sync From| F
-    J -->|Update| K[Their RocksDB]
+    A[Flutter UI] -->|FFI| B[Rust Backend]
+    B -->|Create| C[Local SQLLite]
+    B -->|Generate Group Keys| D[Group Keys]
+    B -->|Announce to P2P| E[P2P Network]
+    B -->|Backup Data| F[AI Bot/S3]    
+    C -->|Store Metadata| G[Group Metadata]
+    C -->|Store Member List| H[Member List]
+    C -->|Store Permissions| I[Permissions]
+    E -->|Sync with Peers| J[Online Peers]
+    J -->|Store Data| K[Their SQLLite]    
+    F -->|Backup to Persistent| L[Persistent Storage]
 ```
 
 2B All online
@@ -46,11 +45,11 @@ graph TD
 ```mermaid
 graph TD
     A[Post Content] -->|FFI| B[Rust Backend]
-    B -->|1. Store| C[Local RocksDB]
+    B -->|1. Store| C[Local SQLLite]
     B -->|2. Iroh Share| D[P2P Network]
     
     D -->|Sync| E[Online Peers]
-    E -->|Store| F[Their RocksDB]
+    E -->|Store| F[Their SQLLite]
     
     D -->|Backup| G[AI Bot]
     G -->|Archive| H[S3 Storage]
@@ -67,11 +66,11 @@ graph TD
 
 graph TD
     A[Post Content] -->|FFI| B[Rust Backend]
-    B -->|1. Store| C[Local RocksDB]
+    B -->|1. Store| C[Local SQLLite]
     B -->|2. Iroh Share| D[Online Peers]
     B -->|3. Backup| E[AI Bot]
     
-    D -->|Sync| F[Their RocksDB]
+    D -->|Sync| F[Their SQLLite]
     E -->|Store| G[S3 Storage]
     
     H[Offline Peers] -.->|Come Online| I[Sync Request]
@@ -88,7 +87,7 @@ graph TD
 
 graph TD
     A[User Interaction] -->|FFI| B[Rust Backend]
-    B -->|1. Store| C[Local RocksDB]
+    B -->|1. Store| C[Local SQLLite]
     B -->|2. CRDT Update| D[Create Operation]
     
     D -->|Iroh Share| E[P2P Network]
@@ -101,7 +100,7 @@ graph TD
     end
     
     E -->|Sync| K[Online Peers]
-    K -->|Update| L[Their RocksDB]
+    K -->|Update| L[Their SQLLite]
 
 ```
 
@@ -125,7 +124,7 @@ graph TD
 
 ```
 ## Storage Strategy forks
-- RocksDB per group
+- SQLLite per group
 - Platform-specific paths
 - Efficient indexing
 
@@ -143,7 +142,7 @@ graph TD
     E -->|No| G[Up to Date]
     
     F -->|5. Stream Updates| H[Apply CRDT Ops]
-    H -->|6. Update| I[Local RocksDB]
+    H -->|6. Update| I[Local SQLLite]
 ```
 
 ## Backup node AI Bot flow
@@ -156,7 +155,7 @@ graph TD
     C -->|3a. Missing Local| D[Get Updates]
     C -->|3b. Missing Remote| E[Send Updates]
     
-    D -->|4. Apply| F[Local RocksDB]
+    D -->|4. Apply| F[Local SQLLite]
     E -->|4. Store| G[Bot Storage]
     
     subgraph "Bot Validation"
