@@ -1,8 +1,117 @@
 # Dripp AI backend
 P2P Social Network focussed on fashion.
 
-## Basic Flows
 
+# Flows
+
+## Identity / cloudless DID based
+
+1. Group Creation Flow (from identity perspective)
+```mermaid
+graph TD
+    A[User Creates Group] -->|Generate| B[Group Genesis Block]
+    B -->|Contains| C[Admin DID + Keys]
+    B --> D[Group Settings]
+    
+    E[New User] -->|Request Join| F[Create Local DID]
+    F -->|Generate| G[KeyPair]
+    F -->|Store| H[Local Chain]
+    
+    G -->|Sign| I[Join Request]
+    I -->|Via Iroh| J[Group Admin]
+    
+    J -->|Verify| K[Phone + DID]
+    K -->|If Approved| L[Member Block]
+    L -->|Sync via Iroh| M[All Group Members]
+    
+    M -->|Each Member| N[Verify Member Block]
+    N -->|If Valid| O[Update Local Chain]
+```
+
+2. Request to join groups flow (DID)
+```mermaid
+graph TD
+    subgraph "User Side: Join Request"
+        A[User Requests Join] -->|1| B[Generate DID/KeyPair]
+        B -->|2| C[Store in Local Chain]
+        C -->|3| D[Create Join Request]
+        D -->|4| E[Sign with New DID]
+    end
+
+    subgraph "Admin Side: Verification"
+        E -->|5| F[Admin Receives Request]
+        F -->|6| G[Verify Phone Number]
+        G -->|7| H[Create Verification Block]
+        H -->|8| I[Sign with Admin DID]
+        I -->|9| J[Add to Group Chain]
+    end
+
+    subgraph "Peer Side: Member Acceptance"
+        J -->|10| K[Peers Receive Block]
+        K -->|11| L[Verify Admin Signature]
+        L -->|12| M[Verify DID Structure]
+        M -->|13| N[Verify Phone Proof]
+        N -->|14| O[Add to Members List]
+    end
+
+    J -->|via Iroh| K
+    O -->|15| P[Update Local Chain]
+```
+3. Post creation and verification flow
+```mermaid
+graph TD
+    subgraph "Post Creation"
+        A[User Creates Post] -->|Store| B[Local SQLite]
+        A -->|Get Identity| C[Local Blockchain]
+        C -->|Sign with DID| D[Create Signature]
+        D -->|Attach to| E[Post Metadata]
+    end
+
+    subgraph "Sync Process"
+        E -->|Announce via Iroh| F[Group Peers]
+        F -->|Each Peer| G{Verify Signature}
+        G -->|Valid| H[Check Local Chain]
+        H -->|Verify Membership| I{Vote}
+        
+        I -->|>50% Yes| J[Pin Content]
+        I -->|<50%| K[Remain Unpinned]
+        
+        J -->|Store| L[Peer's SQLite]
+    end
+
+    subgraph "Storage Structure"
+        M[SQLite] --> N[Posts]
+        M --> O[Comments]
+        M --> P[Likes/Dislikes]
+        
+        Q[Blockchain] --> R[Identity Only]
+        Q --> S[Membership Proof]
+    end
+
+```
+4. Interactions (Like/Comment) Flow: (DID perspective)
+```mermaid
+graph TD
+    A[User Interaction] -->|Create| B[Interaction Block]
+    
+    subgraph "Interaction Creation"
+        B -->|Include| C[Original Post CID]
+        B -->|Sign with| D[User DID]
+        B -->|Add| E[Timestamp]
+    end
+    
+    E -->|Store| F[Local Chain]
+    E -->|Share via Iroh| G[Group Members]
+    
+    subgraph "Peer Processing"
+        G -->|Verify| H[Author DID]
+        H -->|Check| I[Group Membership]
+        I -->|Verify| J[Original Post Exists]
+        J -->|If Valid| K[Add to Chain]
+    end
+```
+
+## Non-Identity flows (actual data)
 ### Group creation flow:
 
 ```mermaid
