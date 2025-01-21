@@ -1,6 +1,7 @@
 [package]
-name = "your_crate_name"
+name = "dripp_backend"
 version = "1.0.0"
+edition = "2018"
 authors = ["Anirudh Vyas <ricky.nj@gmail.com>"]
 description = "Iroh based FFI library to build fllutter based app Dripp"
 license = "MIT"
@@ -17,11 +18,13 @@ crate-type = ["staticlib", "cdylib"]
 [dependencies]
 ## Core
 flutter_rust_bridge = "2.7.0"
+derive_builder = "0.20.2"
+thiserror = "2.0.11"
 yrs = "0.22.0"
 tokio = { version = "1.10.0", features = ["rt", "rt-multi-thread", "io-util", "time", "sync"] }
-rocksdb = "0.23.0"
+sqlx = { version = "0.8.3", features = ["runtime-tokio", "macros", "sqlite", "json", "uuid", "tls-native-tls"] }
 serde =  "1.0.217" 
-serde_json = "1.0.136"
+serde_json = "1.0.137"
 iroh = "0.31.0"
 futures = "0.3"
 once_cell = "1.0"
