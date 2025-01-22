@@ -37,3 +37,11 @@ pub static SQLLITE_POOL: Lazy<SqlitePool> = Lazy::new(|| {
         .connect_lazy(&format!("sqlite://{}!.db", DB_ENVIRONMENT.db_name))
         .expect("Failed to create database pool")
 });
+
+pub static ROCKSDB : Lazy<rocksdb::DB> = Lazy::new(|| {
+    let path = "/tmp/rocksdb"; 
+    let mut opts = rocksdb::Options::default();
+    opts.create_if_missing(true);
+    let db = rocksdb::DB::open(&opts, path).unwrap();
+    db
+});

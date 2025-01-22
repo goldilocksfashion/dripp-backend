@@ -1,7 +1,7 @@
+use once_cell::sync::Lazy;
 use std::error::Error as StdError;
 use thiserror::Error;
 use tokio::runtime::Runtime;
-use once_cell::sync::Lazy;
 
 /// Error enum for Infrastructure layer
 #[derive(Debug, Error)]
@@ -18,6 +18,8 @@ pub enum InfrastructureError {
     /// Error for env layer
     #[error("Env error: {0}")]
     EnvError(String, #[source] Box<dyn StdError + Send + Sync>),
+    #[error("Serialization error: {0}")]
+    SerializationError(String, #[source] Box<dyn StdError + Send + Sync>),
     /// Error for unknown error
     #[error("Unknown error: {0}")]
     UnknownError(String, #[source] Box<dyn StdError + Send + Sync>),
@@ -30,6 +32,16 @@ pub type InfraResult<T> = std::result::Result<T, InfrastructureError>;
 pub static TOKIO: Lazy<Runtime> = Lazy::new(|| {
     let rt = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
+        .build()
+        .unwrap();
+    rt
+});
+
+pub static TOKIO_BLOCKING: Lazy<Runtime> = Lazy::new(|| {
+    let rt = tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(1)
+        .enable_io()
+        .enable_time()
         .build()
         .unwrap();
     rt

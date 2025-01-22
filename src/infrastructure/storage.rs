@@ -1,17 +1,15 @@
 use crate::infrastructure::core::TOKIO;
-use crate::infrastructure::core::{InfraResult, InfrastructureError};
+use crate::infrastructure::core::InfrastructureError;
 use crate::infrastructure::env::Environment;
 use crate::infrastructure::env::SQLLITE_POOL as DB_POOL;
-use crate::infrastructure::events::{Event};
+use crate::infrastructure::events::Event;
 use sqlx::SqlitePool;
 
-
-
 /// Storage service is a trait that defines the operations that can be performed on a storage.
-pub trait StorageService<T> {
-    fn create(&self, event: T) -> impl std::future::Future<Output = InfraResult<bool>> + Send;
-    fn delete(&self, event: T) -> impl std::future::Future<Output = InfraResult<bool>> + Send;
-    fn search(&self, query: &str) -> InfraResult<Vec<T>>;
+pub(crate) trait StorageService<T> {
+    async fn create(&self, event: T) -> Result<bool, InfrastructureError>;
+    async fn delete(&self, event: T) -> Result<bool, InfrastructureError>;
+    fn search(&self, query: &str) -> Result<Vec<T>, InfrastructureError>;
 }
 
 pub struct StorageServiceSqlLiteImpl {
@@ -31,9 +29,9 @@ impl StorageServiceSqlLiteImpl {
 }
 
 impl StorageService<Event> for StorageServiceSqlLiteImpl {
-      async fn create(&self, event: Event) -> InfraResult<bool> {
+    async fn create(&self, event: Event) -> Result<bool, InfrastructureError> {
         let query = r"#INSERT INTO events (id, event_source, created, pinned, event_type, payload) VALUES (?, ?, ?, ?, ?, ?)";
-        let r =  sqlx::query(query)
+        let r = sqlx::query(query)
             .bind(event.id.to_vec().as_slice())
             .bind(event.event_source.id.to_vec().as_slice())
             .bind(event.created)
@@ -42,16 +40,17 @@ impl StorageService<Event> for StorageServiceSqlLiteImpl {
             .bind(event.payload)
             .execute(self.db)
             .await
-            .map_err(|e| InfrastructureError::StorageError("Failed to create event".to_string(), Box::new(e)))?;
-            return Ok(r.rows_affected() == 1)
+            .map_err(|e| {
+                InfrastructureError::StorageError("Failed to create event".to_string(), Box::new(e))
+            })?;
+        return Ok(r.rows_affected() == 1);
     }
 
     async fn delete(&self, _event: Event) -> Result<bool, InfrastructureError> {
         todo!()
     }
-    
-    fn search(&self, _query: &str) -> InfraResult<Vec<Event>> {
+
+    fn search(&self, _query: &str) -> Result<Vec<Event>, InfrastructureError> {
         todo!()
     }
-
 }
