@@ -11,25 +11,25 @@ We've designed a lightweight, decentralized membership system to ensure privacy,
 
 Identity Management:
 - Ring Buffer Analogy:
-	•	Imagine a circular notepad with a fixed number of pages. When you fill all the pages, you start overwriting the oldest notes with new ones.
-	•	Key Point: This ensures we keep the system lightweight, only storing the most recent, relevant data.
-	2.	Flushing to Disk:
-	•	When the notepad fills up, we take a photo of it and save it in a folder for future reference. This ensures nothing important is lost, even if the app is closed.
+		Imagine a circular notepad with a fixed number of pages. When you fill all the pages, you start overwriting the oldest notes with new ones.
+		Key Point: This ensures we keep the system lightweight, only storing the most recent, relevant data.
+- Flushing to Disk:
+		When the notepad fills up, we take a photo of it and save it in a folder for future reference. This ensures nothing important is lost, even if the app is closed.
 - Privacy:
-	- 	Our app never needs to store sensitive user data on external servers. This is a huge selling point for privacy-conscious users and aligns with modern data protection laws like GDPR.
-	- 	Cost Savings:
+	 	Our app never needs to store sensitive user data on external servers. This is a huge selling point for privacy-conscious users and aligns with modern data protection laws like GDPR.
+- Cost Savings:
 		By using a peer-to-peer system, we don't need expensive cloud storage or servers to manage group data. This keeps operating costs low.
-	- 	Scalability:
+- Scalability:
 		Even if we have millions of users, this system remains lightweight and efficient. There's no risk of performance issues as we grow.
-	- 	Reliability:
+- Reliability:
 		Because the data is shared across multiple users in the group, there's no single point of failure. Even if one person's phone is offline, others can still sync and share updates.
- - What happens if someone leaves a group?
+- What happens if someone leaves a group?
 		The system can mark their membership as `expired` so they can no longer post or participate, but their data remains securely stored until cleaned up.
--	What if someone tries to fake their identity?
+- What if someone tries to fake their identity?
 		Every user has a unique digital signature tied to their phone number, which proves they are who they claim to be. Posts and actions can only come from verified group members.
-- 	What if a group becomes very large?
+- What if a group becomes very large?
 		We've designed the system to handle thousands of members by dividing the data into chunks. This ensures it stays fast and efficient, no matter the group size.
-        
+
 # Flows
 
 ## Identity / cloudless DID based
