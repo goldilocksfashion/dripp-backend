@@ -5,16 +5,6 @@ use serde::{Deserialize, Serialize};
 use super::core::TOKIO_BLOCKING;
 use super::storage::StorageService;
 
-#[derive(Serialize, Deserialize)]
-pub struct IdentityBlock {
-    pub block_id: [u8; 16],
-    pub previous_hash: [u8; 16],
-    pub data: Vec<u128>,    
-    pub timestamp: i64,
-    pub creator_key: [u8; 16],
-    pub signature: [u8; 16],
-}
-
 pub struct StorageServiceRocksDBImpl {
     _env: Environment,
     _db: &'static rocksdb::DB,
